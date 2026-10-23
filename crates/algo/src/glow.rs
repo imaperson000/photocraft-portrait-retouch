@@ -105,12 +105,25 @@ const DISPERSION: [f32; 3] = [0.6, 0.0, -0.5];
 
 /// The glow of `src` (black where nothing glows), the same size as `src`.
 pub fn glow(src: &Planes, p: &GlowParams) -> Planes {
+    glow_from(src, p, None)
+}
+
+/// [`glow`] with only the lights where `emit` (0–1 per pixel, the size of `src`) allows: a light
+/// painted out gives no glow, while the glow of the lights kept still spreads everywhere.
+pub fn glow_from(src: &Planes, p: &GlowParams, emit: Option<&[f32]>) -> Planes {
     let (w, h) = (src.width, src.height);
     let mut out = Planes::new(w, h);
     if w == 0 || h == 0 || src.rgb.iter().any(|c| c.len() != src.len()) {
         return out;
     }
-    let bright = bright_pass(src, p);
+    let mut bright = bright_pass(src, p);
+    if let Some(emit) = emit.filter(|e| e.len() == src.len()) {
+        for plane in &mut bright.rgb {
+            for (v, m) in plane.iter_mut().zip(emit) {
+                *v *= m.clamp(0.0, 1.0);
+            }
+        }
+    }
     // Base size: 15 % of the long side at radius 100 (3 % at the default 20).
     let base = p.radius.clamp(0.0, 100.0) / 100.0 * w.max(h) as f32 * 0.15;
     let dispersion = p.dispersion.clamp(0.0, 100.0) / 100.0;
@@ -404,6 +417,35 @@ mod tests {
         let gray = glow(&src, &GlowParams { colorize: true, saturation: 0.0, ..Default::default() });
         let plain = glow(&src, &GlowParams::default());
         assert!((at(&gray, 0, 45, 30) - at(&plain, 0, 45, 30)).abs() < 1e-4, "saturation 0 = no tint on white light");
+    }
+
+    /// Painting a light out of the emission mask removes its glow; the other light's glow still
+    /// reaches into the painted area.
+    #[test]
+    fn emission_mask_picks_the_lights() {
+        let (w, h) = (120, 40);
+        let mut src = Planes::new(w, h);
+        for (x0, y0) in [(20, 18), (100, 18)] {
+            for y in y0..y0 + 4 {
+                for x in x0..x0 + 4 {
+                    for c in &mut src.rgb {
+                        c[y * w + x] = 1.0;
+                    }
+                }
+            }
+        }
+        let mut emit = vec![1.0f32; w * h];
+        for y in 0..h {
+            for x in 34..w {
+                emit[y * w + x] = 0.0;
+            }
+        }
+        let all = glow(&src, &GlowParams::default());
+        let some = glow_from(&src, &GlowParams::default(), Some(&emit));
+        assert!(at(&all, 0, 101, 19) > 0.5 && at(&some, 0, 101, 19) < at(&all, 0, 101, 19) * 0.2, "right light painted out");
+        assert!((at(&some, 0, 21, 19) - at(&all, 0, 21, 19)).abs() < 0.05, "left light kept");
+        assert!(at(&some, 0, 36, 19) > 0.0, "its glow crosses into the painted area");
+        assert_eq!(glow_from(&src, &GlowParams::default(), Some(&[1.0; 3])), all, "a wrong-sized mask is ignored");
     }
 
     #[test]

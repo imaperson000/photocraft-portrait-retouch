@@ -282,3 +282,34 @@ fn skin_smoothing_bad_params_are_errors() {
     assert_eq!(layer(&g, r["layer"].as_u64().unwrap()).mask.as_ref().unwrap().value(3, 3), 1.0);
     assert!(busy("cmyk", 8).execute(SKIN_SMOOTH, json!({})).is_err());
 }
+
+#[test]
+fn skin_detail_view_toggles_on_top() {
+    let mut s = busy("rgb", 8);
+    s.execute(FREQUENCY_SEPARATION, json!({})).unwrap();
+    let active = s.active().unwrap().active_layer;
+    let r = s.execute(DETAIL_VIEW, json!({})).unwrap();
+    assert_eq!(r["shown"], true);
+    let g = top(&s);
+    assert_eq!(g.name, "皮膚細節檢視");
+    assert_eq!(names(g), ["黑白", "對比"]);
+    // The view is gray; working on the retouch layers carries on where it was.
+    assert!(shown(&s).px.iter().all(|p| (p[0] - p[1]).abs() < 1e-3 && (p[1] - p[2]).abs() < 1e-3));
+    assert_eq!(s.active().unwrap().active_layer, active);
+    let n = s.active().unwrap().doc.layers.len();
+    // Again: gone.
+    assert_eq!(s.execute(DETAIL_VIEW, json!({})).unwrap()["shown"], false);
+    assert_eq!(s.active().unwrap().doc.layers.len(), n - 1);
+    assert_eq!(top(&s).name, "頻率分離");
+    // Solarize puts a folded curve in it; undo brings the previous state back.
+    s.execute(DETAIL_VIEW_SOLARIZE, json!({})).unwrap();
+    let curve = &top(&s).children().unwrap()[1];
+    match &curve.content {
+        LayerContent::Adjustment(Adjustment::Curves { master, .. }) => assert_eq!(master.len(), 5),
+        other => panic!("{other:?}"),
+    }
+    s.execute("edit.undo", json!({})).unwrap();
+    assert_eq!(top(&s).name, "頻率分離");
+    assert!(s.execute(DETAIL_VIEW, json!({"mode": "neon"})).is_err());
+    assert!(s.execute(DETAIL_VIEW_SOLARIZE, json!(1)).is_err());
+}

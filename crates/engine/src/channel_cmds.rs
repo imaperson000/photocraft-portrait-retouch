@@ -1313,7 +1313,7 @@ fn move_channel(s: &mut Session, p: &Value) -> Result<Value> {
 }
 
 /// Make `t` the edit target and show it the way Photoshop does when its row is clicked.
-fn target(s: &mut Session, t: ChannelTarget) {
+pub(crate) fn target(s: &mut Session, t: ChannelTarget) {
     if let Some(st) = s.active_mut() {
         let colors = color_count(&st.doc);
         let n = st.doc.channels.len();

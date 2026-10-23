@@ -155,3 +155,61 @@ fn large_documents_are_computed_reduced() {
     assert!(red_at(&after, 4200, 2100, 600) > 0.9);
     assert!(red_at(&after, 4200, 2300, 600) > 0.06, "{}", red_at(&after, 4200, 2300, 600));
 }
+
+/// Two lights; the glow mask as light source paints the right one out.
+#[test]
+fn mask_as_light_source_limits_which_lights_glow() {
+    let (w, h) = (160, 60);
+    let mut s = Session::new();
+    s.execute("file.new", json!({"width": w, "height": h, "mode": "rgb", "depth": 8})).unwrap();
+    s.edit("paint", |doc, active| {
+        let surf = doc.layer_mut(active.unwrap()).unwrap().surface_mut().unwrap();
+        let fmt = surf.format();
+        surf.fill_rect(Rect::new(0, 0, w, h), &photocraft_raster::from_rgba(&fmt, [0.0, 0.0, 0.0, 1.0]));
+        for x0 in [30, 126] {
+            surf.fill_rect(Rect::new(x0, 28, x0 + 4, 32), &photocraft_raster::from_rgba(&fmt, [1.0, 1.0, 1.0, 1.0]));
+        }
+        Ok(())
+    })
+    .unwrap();
+    let r = s.execute(GLOW, json!({"maskUse": "source"})).unwrap();
+    let id = LayerId(r["layer"].as_u64().unwrap());
+    let mask = s.active().unwrap().doc.layer(id).unwrap().mask.clone().unwrap();
+    assert!(!mask.enabled, "a light-source mask does not hide the glow");
+    let both = shown(&s);
+    // Paint the right half of the mask black, then update.
+    s.execute(MASK_PAINT, json!({})).unwrap();
+    s.edit("paint mask", |doc, _| {
+        let m = doc.layer_mut(id).unwrap().mask.as_mut().unwrap();
+        m.surface.fill_rect(Rect::new(80, 0, w, h), &[0.0]);
+        Ok(())
+    })
+    .unwrap();
+    let steps = s.active().unwrap().history.past_len();
+    s.execute(UPDATE, json!({})).unwrap();
+    assert_eq!(s.active().unwrap().history.past_len(), steps + 1);
+    let after = shown(&s);
+    assert!(red_at(&both, w, 136, 30) > 0.0 && red_at(&after, w, 136, 30) < red_at(&both, w, 136, 30) * 0.3, "right light no longer glows");
+    assert!(red_at(&both, w, 40, 30) > 0.0 && (red_at(&after, w, 40, 30) - red_at(&both, w, 40, 30)).abs() < 0.005, "left light still glows");
+    assert!(red_at(&after, w, 84, 30) > 0.0 || red_at(&both, w, 84, 30) == 0.0);
+    // Back to output: the mask hides the glow again.
+    s.execute(GLOW, json!({"maskUse": "output"})).unwrap();
+    assert!(s.active().unwrap().doc.layer(id).unwrap().mask.as_ref().unwrap().enabled);
+    assert_eq!(active_settings(&s).unwrap()["maskUse"], "output");
+}
+
+#[test]
+fn mask_brush_targets_the_glow_mask() {
+    let mut s = night("rgb", 8, 40, 30);
+    assert!(s.execute(MASK_PAINT, json!({})).is_err());
+    assert!(s.execute(UPDATE, json!({})).is_err());
+    s.execute(GLOW, json!({})).unwrap();
+    assert_eq!(s.execute(MASK_ERASE, json!({})).unwrap()["tool"], "eraser");
+    assert_eq!(s.execute(MASK_PAINT, json!({})).unwrap()["tool"], "brush");
+    let st = s.active().unwrap();
+    assert_eq!(st.channel_view.target, crate::channel_cmds::ChannelTarget::LayerMask);
+    assert_eq!(s.tools.foreground, [1.0, 1.0, 1.0, 1.0]);
+    assert_eq!(s.tools.background, [0.0, 0.0, 0.0, 1.0]);
+    assert!(s.execute(MASK_PAINT, json!(5)).is_err());
+    assert!(s.execute(GLOW, json!({"maskUse": "both"})).is_err());
+}

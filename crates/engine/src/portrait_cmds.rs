@@ -15,6 +15,8 @@
 //!   detail finer than a small Gaussian), and evens out the band in between, where blotches and
 //!   uneven tone live: `image + strength · (surfaceBlur(image) − gaussian(image, detail))`. The
 //!   mask starts as a soft skin-tone map (chroma range in YCbCr), hidden, or revealed.
+//! - **Skin Detail View** (`portrait.skinDetailView`, `…Solarize`): a toggled viewing aid on top
+//!   of the stack (Black & White plus a steep or solarizing curve) that makes uneven skin visible.
 //!
 //! Layer names are Traditional Chinese, as the person who asked for these kits wanted. They are
 //! document data, so they stay the same whatever the UI language is.
@@ -33,6 +35,11 @@ use crate::{EngineError, Result, Session};
 pub const FREQUENCY_SEPARATION: &str = "portrait.frequencySeparation";
 pub const DODGE_BURN: &str = "portrait.dodgeBurn";
 pub const SKIN_SMOOTH: &str = "portrait.skinSmooth";
+pub const DETAIL_VIEW: &str = "portrait.skinDetailView";
+pub const DETAIL_VIEW_SOLARIZE: &str = "portrait.skinDetailViewSolarize";
+
+/// XMP namespace marking the skin detail view group.
+const VIEW_NS: &str = "https://photocraft.app/ns/retouch-view/1.0/";
 
 /// The largest blur radius the low-frequency layer accepts (as the Gaussian Blur dialog's range
 /// would allow far more, but past this the "low" layer is just the average colour).
@@ -53,6 +60,7 @@ const HELPER: &str = "觀察組";
 const HELPER_BW: &str = "黑白";
 const HELPER_CURVE: &str = "對比";
 const SMOOTH: &str = "磨皮";
+const VIEW_GROUP: &str = "皮膚細節檢視";
 
 fn bad(cmd: &str, msg: impl Into<String>) -> EngineError {
     EngineError::BadParams { cmd: cmd.into(), msg: msg.into() }
@@ -401,7 +409,71 @@ pub fn specs() -> Vec<CommandSpec> {
             run: skin_smooth,
             journal: true,
         },
+        CommandSpec {
+            id: DETAIL_VIEW,
+            label: "Skin Detail View",
+            menu: &["Filter", "Portrait Retouch"],
+            shortcut: None,
+            params: r##"{"mode":"contrast|solarize"="contrast"} (run again to remove the view) → {shown, group?}"##,
+            enabled: supported,
+            run: detail_view,
+            journal: true,
+        },
+        CommandSpec {
+            id: DETAIL_VIEW_SOLARIZE,
+            label: "Skin Detail View (Solarize)",
+            menu: &["Filter", "Portrait Retouch"],
+            shortcut: None,
+            params: r##"{} (run again to remove the view) → {shown, group?}"##,
+            enabled: supported,
+            run: |s, p| {
+                object(p, DETAIL_VIEW_SOLARIZE)?;
+                detail_view(s, &json!({"mode": "solarize"}))
+            },
+            journal: true,
+        },
     ]
+}
+
+/// The top-level skin detail view group, if there is one.
+fn detail_view_group(doc: &Document) -> Option<LayerId> {
+    doc.layers.iter().find(|l| l.is_group() && l.xmp.as_deref().is_some_and(|x| x.contains(VIEW_NS))).map(|l| l.id)
+}
+
+/// `portrait.skinDetailView`: a viewing aid on top of everything that shows tone without colour,
+/// steepened so blotches, uneven transitions and texture stand out (`contrast`), or folded back
+/// on itself so every small change of tone becomes a visible band (`solarize`). Running it again
+/// takes it away. It is a group of adjustment layers: hide or delete it before exporting.
+fn detail_view(s: &mut Session, p: &Value) -> Result<Value> {
+    let cmd = DETAIL_VIEW;
+    object(p, cmd)?;
+    supported(s).map_err(EngineError::Other)?;
+    let mode = choice(p, cmd, "mode", &["contrast", "solarize"], "contrast")?;
+    let st = s.active().ok_or(EngineError::NoDocument)?;
+    if let Some(id) = detail_view_group(&st.doc) {
+        s.edit("Skin Detail View", |doc, active| {
+            doc.remove(id).ok_or(EngineError::NoLayer(id))?;
+            if *active == Some(id) {
+                *active = doc.layers.last().map(|l| l.id);
+            }
+            Ok(())
+        })?;
+        return Ok(json!({ "shown": false }));
+    }
+    let id = s.edit("Skin Detail View", |doc, _| {
+        let color = doc.pixel_format().mode;
+        let points: &[(f32, f32)] = match mode {
+            "solarize" => &[(0.0, 0.0), (0.25, 1.0), (0.5, 0.0), (0.75, 1.0), (1.0, 0.0)],
+            _ => &[(0.0, 0.0), (0.35, 0.08), (0.5, 0.5), (0.65, 0.92), (1.0, 1.0)],
+        };
+        let bw = Layer::new(HELPER_BW, LayerContent::Adjustment(crate::adjust_params::default_for("blackWhite", color)?));
+        let curve = curves_layer(HELPER_CURVE, color, points)?;
+        let mut group = Layer::group(VIEW_GROUP, vec![bw, curve]);
+        group.xmp = Some(format!("<x:xmpmeta xmlns:x=\"adobe:ns:meta/\"><rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"><rdf:Description rdf:about=\"\" xmlns:photocraftView=\"{VIEW_NS}\" photocraftView:mode=\"{mode}\"/></rdf:RDF></x:xmpmeta>").into());
+        let top = doc.layers.last().map(|l| l.id);
+        Ok(doc.insert_above(top, group))
+    })?;
+    Ok(json!({ "shown": true, "group": id.0 }))
 }
 
 #[cfg(test)]

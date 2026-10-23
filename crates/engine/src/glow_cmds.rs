@@ -23,6 +23,9 @@ use crate::{EngineError, Result, Session};
 pub const GLOW: &str = "portrait.glow";
 pub const MASK_INVERT: &str = "portrait.glowMaskInvert";
 pub const MASK_CLEAR: &str = "portrait.glowMaskClear";
+pub const MASK_PAINT: &str = "portrait.glowMaskBrush";
+pub const MASK_ERASE: &str = "portrait.glowMaskEraser";
+pub const UPDATE: &str = "portrait.glowUpdate";
 
 /// XMP namespace of the glow settings.
 pub const NS: &str = "https://photocraft.app/ns/glow/1.0/";
@@ -39,8 +42,19 @@ fn bad(msg: impl Into<String>) -> EngineError {
     EngineError::BadParams { cmd: GLOW.into(), msg: msg.into() }
 }
 
-/// The settings `p` asks for, as glow params and as the canonical JSON stored on the layer.
-fn parse(p: &Value) -> Result<(GlowParams, bool, Value)> {
+/// A Glow call's settings, checked.
+struct Settings {
+    params: GlowParams,
+    /// Give a new glow layer a mask.
+    mask: bool,
+    /// The mask picks which lights glow (instead of hiding parts of the glow).
+    source: bool,
+    /// The canonical JSON stored on the layer.
+    stored: Value,
+}
+
+/// The settings `p` asks for.
+fn parse(p: &Value) -> Result<Settings> {
     match p {
         Value::Object(_) | Value::Null => {}
         _ => return Err(bad("expected an object")),
@@ -91,14 +105,23 @@ fn parse(p: &Value) -> Result<(GlowParams, bool, Value)> {
         lightness: num("lightness", -100.0, 0.0, 0.0)?,
     };
     let mask = flag("mask", true)?;
+    let source = match p.get("maskUse") {
+        None | Some(Value::Null) => false,
+        Some(v) => match v.as_str() {
+            Some("output") => false,
+            Some("source") => true,
+            _ => return Err(bad("`maskUse` must be output or source")),
+        },
+    };
     let stored = json!({
+        "maskUse": if source { "source" } else { "output" },
         "mode": if g.mode == GlowMode::Streaks { "streaks" } else { "bloom" },
         "rays": g.rays.to_string(),
         "intensity": g.intensity, "glowRadius": g.radius, "threshold": g.threshold, "range": g.range,
         "exposure": g.exposure, "dispersion": g.dispersion, "rotation": g.rotation, "detail": g.detail,
         "colorize": g.colorize, "hue": g.hue, "saturation": g.saturation, "lightness": g.lightness,
     });
-    Ok((g, mask, stored))
+    Ok(Settings { params: g, mask: mask || source, source, stored })
 }
 
 fn escape(s: &str) -> String {
@@ -234,8 +257,24 @@ fn upsample(glow: &Planes, bounds: Rect, factor: usize, fmt: PixelFormat) -> Res
     Ok(out)
 }
 
-/// The glow of `doc`'s visible image, as an opaque surface in `fmt`.
-fn render(doc: &Document, params: &GlowParams, fmt: PixelFormat) -> Result<Surface> {
+/// `mask` sampled at the centre of every `factor`-pixel block of `bounds` (its painted values,
+/// whether or not the mask is switched on for compositing).
+fn emission(mask: &LayerMask, bounds: Rect, factor: usize, (pw, ph): (usize, usize)) -> Vec<f32> {
+    let half = (factor / 2) as i32;
+    let f = factor as i32;
+    (0..ph)
+        .flat_map(|j| (0..pw).map(move |i| (i as i32, j as i32)))
+        .map(|(i, j)| {
+            let x = (bounds.x0 + i * f + half).min(bounds.x1 - 1);
+            let y = (bounds.y0 + j * f + half).min(bounds.y1 - 1);
+            1.0 - mask.density * (1.0 - mask.surface.sample_channel(x, y, 0))
+        })
+        .collect()
+}
+
+/// The glow of `doc`'s visible image, as an opaque surface in `fmt`; only the lights `emit`
+/// allows glow when it is given.
+fn render(doc: &Document, params: &GlowParams, fmt: PixelFormat, emit: Option<&LayerMask>) -> Result<Surface> {
     let bounds = doc.bounds();
     if bounds.is_empty() {
         return Err(EngineError::Other("the document has no pixels".into()));
@@ -244,7 +283,8 @@ fn render(doc: &Document, params: &GlowParams, fmt: PixelFormat) -> Result<Surfa
     let factor = long.div_ceil(MAX_WORK_SIDE).max(1);
     let image = photocraft_compose::flatten_to_surface(doc, PixelFormat::new(doc.pixel_format().mode, doc.pixel_format().sample, true), None);
     let small = downsample(&image, bounds, factor)?;
-    let glow = photocraft_algo::glow::glow(&small, params);
+    let emit = emit.map(|m| emission(m, bounds, factor, (small.width, small.height)));
+    let glow = photocraft_algo::glow::glow_from(&small, params, emit.as_deref());
     upsample(&glow, bounds, factor, fmt)
 }
 
@@ -259,7 +299,7 @@ fn select_only(s: &mut Session, id: LayerId) {
 
 fn glow(s: &mut Session, p: &Value) -> Result<Value> {
     enabled(s).map_err(EngineError::Other)?;
-    let (params, mask, stored) = parse(p)?;
+    let Settings { params, mask, source, stored } = parse(p)?;
     let xmp: std::sync::Arc<str> = packet(&stored).into();
     let existing = active_glow_layer(s);
     let label = if existing.is_some() { "Edit Glow" } else { "Glow" };
@@ -267,20 +307,33 @@ fn glow(s: &mut Session, p: &Value) -> Result<Value> {
         let fmt = doc.pixel_format();
         if let Some(id) = existing {
             // Render from the image without this glow, then put the new pixels in its place.
-            let mut source = doc.clone();
-            source.layer_mut(id).ok_or(EngineError::NoLayer(id))?.visible = false;
-            let pixels = render(&source, &params, fmt)?;
+            let mut image = doc.clone();
+            let layer = image.layer_mut(id).ok_or(EngineError::NoLayer(id))?;
+            layer.visible = false;
+            if source && layer.mask.is_none() {
+                layer.mask = Some(LayerMask::reveal_all());
+            }
+            let emit = layer.mask.clone().filter(|_| source);
+            let pixels = render(&image, &params, fmt, emit.as_ref())?;
             let layer = doc.layer_mut(id).ok_or(EngineError::NoLayer(id))?;
             *crate::pixels_mut(layer)? = pixels;
             layer.xmp = Some(xmp.clone());
+            if source && layer.mask.is_none() {
+                layer.mask = Some(LayerMask::reveal_all());
+            }
+            // As a light source the mask no longer hides the glow, which spreads past it.
+            if let Some(m) = layer.mask.as_mut() {
+                m.enabled = !source;
+            }
             return Ok(id);
         }
         let mut layer = Layer::raster(LAYER_NAME, fmt);
-        *crate::pixels_mut(&mut layer)? = render(doc, &params, fmt)?;
+        let emit = source.then(LayerMask::reveal_all);
+        *crate::pixels_mut(&mut layer)? = render(doc, &params, fmt, emit.as_ref())?;
         layer.blend = BlendMode::Screen;
         layer.xmp = Some(xmp.clone());
         if mask {
-            layer.mask = Some(LayerMask::reveal_all());
+            layer.mask = Some(LayerMask { enabled: !source, ..LayerMask::reveal_all() });
         }
         let id = doc.insert_above(*active, layer);
         *active = Some(id);
@@ -288,6 +341,30 @@ fn glow(s: &mut Session, p: &Value) -> Result<Value> {
     })?;
     select_only(s, id);
     Ok(json!({ "layer": id.0, "edited": existing.is_some(), "settings": stored }))
+}
+
+/// `portrait.glowUpdate`: render the active glow layer again with its own settings (after its
+/// mask was painted, or the image beneath changed).
+fn update(s: &mut Session, p: &Value) -> Result<Value> {
+    if !(p.is_object() || p.is_null()) {
+        return Err(EngineError::BadParams { cmd: UPDATE.into(), msg: "expected an object".into() });
+    }
+    let settings = active_settings(s).ok_or_else(|| EngineError::Other("the active layer is not a glow layer".into()))?;
+    glow(s, &Value::Object(settings))
+}
+
+/// `portrait.glowMaskBrush` / `portrait.glowMaskEraser`: target the active glow layer's mask with
+/// white to paint and black to erase, for the Brush or Eraser the shell then picks.
+fn mask_paint(s: &mut Session, p: &Value, cmd: &str, tool: &str) -> Result<Value> {
+    if !(p.is_object() || p.is_null()) {
+        return Err(EngineError::BadParams { cmd: cmd.into(), msg: "expected an object".into() });
+    }
+    mask_enabled(s).map_err(EngineError::Other)?;
+    crate::channel_cmds::target(s, crate::channel_cmds::ChannelTarget::LayerMask);
+    s.sync_tools_mask_target();
+    s.tools.foreground = [1.0, 1.0, 1.0, 1.0];
+    s.tools.background = [0.0, 0.0, 0.0, 1.0];
+    Ok(json!({ "tool": tool }))
 }
 
 fn change_mask(s: &mut Session, label: &str, f: impl FnOnce(&mut LayerMask)) -> Result<Value> {
@@ -322,7 +399,7 @@ pub fn specs() -> Vec<CommandSpec> {
             label: "Glow…",
             menu: &["Filter", "Portrait Retouch"],
             shortcut: None,
-            params: r##"{"mode":"bloom|streaks"="bloom","rays":"2|4|6|8"="2","intensity":0..100=100,"glowRadius":0..100=20,"threshold":0.01..1=0.25,"range":bool=false,"exposure":0..255=0,"dispersion":0..100=0,"rotation":-90..90=0,"detail":0..100=0,"colorize":bool=false,"hue":0..360=0,"saturation":0..100=80,"lightness":-100..0=0,"mask":bool=true} (with a glow layer active: re-render it with these settings) → {layer, edited, settings}"##,
+            params: r##"{"mode":"bloom|streaks"="bloom","rays":"2|4|6|8"="2","intensity":0..100=100,"glowRadius":0..100=20,"threshold":0.01..1=0.25,"range":bool=false,"exposure":0..255=0,"dispersion":0..100=0,"rotation":-90..90=0,"detail":0..100=0,"colorize":bool=false,"hue":0..360=0,"saturation":0..100=80,"lightness":-100..0=0,"mask":bool=true,"maskUse":"output|source"="output"} (maskUse source: the mask picks which lights glow; with a glow layer active: re-render it with these settings) → {layer, edited, settings}"##,
             enabled,
             run: glow,
             journal: true,
@@ -345,6 +422,36 @@ pub fn specs() -> Vec<CommandSpec> {
             params: "{}",
             enabled: mask_enabled,
             run: mask_clear,
+            journal: true,
+        },
+        CommandSpec {
+            id: MASK_PAINT,
+            label: "Glow Mask Brush",
+            menu: &["Filter", "Portrait Retouch"],
+            shortcut: None,
+            params: "{} → {tool}",
+            enabled: mask_enabled,
+            run: |s, p| mask_paint(s, p, MASK_PAINT, "brush"),
+            journal: true,
+        },
+        CommandSpec {
+            id: MASK_ERASE,
+            label: "Glow Mask Eraser",
+            menu: &["Filter", "Portrait Retouch"],
+            shortcut: None,
+            params: "{} → {tool}",
+            enabled: mask_enabled,
+            run: |s, p| mask_paint(s, p, MASK_ERASE, "eraser"),
+            journal: true,
+        },
+        CommandSpec {
+            id: UPDATE,
+            label: "Update Glow",
+            menu: &["Filter", "Portrait Retouch"],
+            shortcut: None,
+            params: "{}",
+            enabled: |s| active_glow_layer(s).map(|_| ()).ok_or_else(|| "the active layer is not a glow layer".into()),
+            run: update,
             journal: true,
         },
     ]
