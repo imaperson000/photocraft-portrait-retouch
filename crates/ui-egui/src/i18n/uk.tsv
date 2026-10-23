@@ -4101,6 +4101,5 @@ curves	Smooth	Згладити
 	Clear Glow Mask	Очистити маску світіння
 	Skin Detail View	Перегляд деталей шкіри
 	Skin Detail View (Solarize)	Перегляд деталей шкіри (соляризація)
-	Glow Mask Brush	Пензель маски світіння
-	Glow Mask Eraser	Гумка маски світіння
-	Update Glow	Оновити світіння
+	Local Glow: Start Painting	Локальне світіння: почати малювання
+	Local Glow: Apply	Локальне світіння: застосувати

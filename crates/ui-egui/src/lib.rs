@@ -1415,11 +1415,9 @@ impl PhotocraftApp {
             // Make Work Path selects the new work path in the Paths panel, as in Photoshop.
             self.ui.selected_path = Some("work".into());
         }
-        // Glow mask brush / eraser: the engine targets the glow layer's mask; the shell picks the tool.
-        if let Ok(v) = &r
-            && (id == photocraft_engine::glow_cmds::MASK_PAINT || id == photocraft_engine::glow_cmds::MASK_ERASE)
-        {
-            self.ui.tool = if v.get("tool").and_then(Value::as_str) == Some("eraser") { Tool::Eraser } else { Tool::Brush };
+        // Local Glow: Start Painting shows the glow mask as a red overlay; strokes go there.
+        if r.is_ok() && id == photocraft_engine::glow_cmds::PAINT_START {
+            self.ui.tool = Tool::Brush;
         }
         if r.is_ok() && path_mask {
             // The new layer's vector mask becomes the active path, as in Photoshop: the path it

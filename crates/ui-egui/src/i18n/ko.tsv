@@ -3601,6 +3601,5 @@ curves	Smooth	매끄럽게
 	Clear Glow Mask	글로우 마스크 지우기
 	Skin Detail View	피부 디테일 보기
 	Skin Detail View (Solarize)	피부 디테일 보기(솔라리제이션)
-	Glow Mask Brush	글로우 마스크 브러시
-	Glow Mask Eraser	글로우 마스크 지우개
-	Update Glow	글로우 업데이트
+	Local Glow: Start Painting	부분 글로우: 칠하기 시작
+	Local Glow: Apply	부분 글로우: 적용

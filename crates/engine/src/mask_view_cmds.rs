@@ -77,7 +77,7 @@ pub fn view_json(st: &DocState) -> Value {
 }
 
 /// `{"layer":id?,"mode":"off"|"gray"|"overlay"|"toggleGray"|"toggleOverlay"="toggleGray"}`.
-fn set_view(s: &mut Session, p: &Value) -> Result<Value> {
+pub(crate) fn set_view(s: &mut Session, p: &Value) -> Result<Value> {
     let mode = match p.get("mode") {
         None | Some(Value::Null) => "toggleGray",
         Some(v) => v.as_str().ok_or_else(|| bad("`mode` must be a string"))?,

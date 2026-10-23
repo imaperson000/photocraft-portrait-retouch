@@ -4092,6 +4092,5 @@ curves	Smooth	Εξομάλυνση
 	Clear Glow Mask	Εκκαθάριση μάσκας λάμψης
 	Skin Detail View	Προβολή λεπτομερειών δέρματος
 	Skin Detail View (Solarize)	Προβολή λεπτομερειών δέρματος (σολαριζάρισμα)
-	Glow Mask Brush	Πινέλο μάσκας λάμψης
-	Glow Mask Eraser	Γόμα μάσκας λάμψης
-	Update Glow	Ενημέρωση λάμψης
+	Local Glow: Start Painting	Τοπική λάμψη: έναρξη ζωγραφικής
+	Local Glow: Apply	Τοπική λάμψη: εφαρμογή

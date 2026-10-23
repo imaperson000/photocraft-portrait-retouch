@@ -4122,6 +4122,5 @@ cameraData	Lens	Lens
 	Clear Glow Mask	Parıltı Maskesini Temizle
 	Skin Detail View	Cilt Ayrıntı Görünümü
 	Skin Detail View (Solarize)	Cilt Ayrıntı Görünümü (Solarize)
-	Glow Mask Brush	Parıltı Maskesi Fırçası
-	Glow Mask Eraser	Parıltı Maskesi Silgisi
-	Update Glow	Parıltıyı Güncelle
+	Local Glow: Start Painting	Yerel Parıltı: Boyamaya Başla
+	Local Glow: Apply	Yerel Parıltı: Uygula

@@ -4434,6 +4434,5 @@ shape	Appearance	Apparence
 	Clear Glow Mask	Effacer le masque de halo
 	Skin Detail View	Vue des détails de la peau
 	Skin Detail View (Solarize)	Vue des détails de la peau (solarisation)
-	Glow Mask Brush	Pinceau du masque de halo
-	Glow Mask Eraser	Gomme du masque de halo
-	Update Glow	Mettre à jour le halo
+	Local Glow: Start Painting	Halo local : commencer à peindre
+	Local Glow: Apply	Halo local : appliquer

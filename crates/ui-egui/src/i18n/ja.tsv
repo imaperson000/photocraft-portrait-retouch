@@ -4070,6 +4070,5 @@ curves	Smooth	スムーズ
 	Clear Glow Mask	グローマスクをクリア
 	Skin Detail View	肌のディテール表示
 	Skin Detail View (Solarize)	肌のディテール表示（ソラリゼーション）
-	Glow Mask Brush	グローマスクブラシ
-	Glow Mask Eraser	グローマスク消しゴム
-	Update Glow	グローを更新
+	Local Glow: Start Painting	部分グロー：描画開始
+	Local Glow: Apply	部分グロー：適用

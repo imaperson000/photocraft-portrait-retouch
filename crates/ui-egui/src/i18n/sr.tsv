@@ -4464,6 +4464,5 @@ shape	Appearance	Izgled
 	Clear Glow Mask	Očisti masku sjaja
 	Skin Detail View	Prikaz detalja kože
 	Skin Detail View (Solarize)	Prikaz detalja kože (solarizacija)
-	Glow Mask Brush	Četka maske sjaja
-	Glow Mask Eraser	Gumica maske sjaja
-	Update Glow	Osveži sjaj
+	Local Glow: Start Painting	Lokalni sjaj: počni crtanje
+	Local Glow: Apply	Lokalni sjaj: primeni

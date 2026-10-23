@@ -156,10 +156,7 @@ fn large_documents_are_computed_reduced() {
     assert!(red_at(&after, 4200, 2300, 600) > 0.06, "{}", red_at(&after, 4200, 2300, 600));
 }
 
-/// Two lights; the glow mask as light source paints the right one out.
-#[test]
-fn mask_as_light_source_limits_which_lights_glow() {
-    let (w, h) = (160, 60);
+fn two_lights(w: i32, h: i32) -> Session {
     let mut s = Session::new();
     s.execute("file.new", json!({"width": w, "height": h, "mode": "rgb", "depth": 8})).unwrap();
     s.edit("paint", |doc, active| {
@@ -172,44 +169,71 @@ fn mask_as_light_source_limits_which_lights_glow() {
         Ok(())
     })
     .unwrap();
-    let r = s.execute(GLOW, json!({"maskUse": "source"})).unwrap();
+    s
+}
+
+/// Two lights. Local glow: Start clears the glow and shows the mask; painting over the right
+/// light and applying makes only that one glow, and its glow spreads past the stroke.
+#[test]
+fn local_glow_paints_the_lights_that_glow() {
+    let (w, h) = (160, 60);
+    let full = {
+        let mut t = two_lights(w, h);
+        t.execute(GLOW, json!({})).unwrap();
+        shown(&t)
+    };
+    let mut s = two_lights(w, h);
+    // No glow layer yet: Start makes one, with nothing glowing.
+    let before = shown(&s);
+    let r = s.execute(PAINT_START, json!({})).unwrap();
+    assert_eq!(r["tool"], "brush");
     let id = LayerId(r["layer"].as_u64().unwrap());
-    let mask = s.active().unwrap().doc.layer(id).unwrap().mask.clone().unwrap();
-    assert!(!mask.enabled, "a light-source mask does not hide the glow");
-    let both = shown(&s);
-    // Paint the right half of the mask black, then update.
-    s.execute(MASK_PAINT, json!({})).unwrap();
-    s.edit("paint mask", |doc, _| {
-        let m = doc.layer_mut(id).unwrap().mask.as_mut().unwrap();
-        m.surface.fill_rect(Rect::new(80, 0, w, h), &[0.0]);
+    assert_eq!(active_settings(&s).unwrap()["maskUse"], "paint");
+    assert!((red_at(&shown(&s), w, 136, 30) - red_at(&before, w, 136, 30)).abs() < 1e-6, "cleared");
+    let st = s.active().unwrap();
+    assert_eq!(crate::mask_view_cmds::view_json(st)["mode"], "overlay");
+    assert!(!st.doc.layer(id).unwrap().mask.as_ref().unwrap().enabled);
+    assert_eq!(s.tools.foreground, [0.0, 0.0, 0.0, 1.0]);
+    // A stroke over the right light (black in the mask, red on screen).
+    s.edit("stroke", |doc, _| {
+        doc.layer_mut(id).unwrap().mask.as_mut().unwrap().surface.fill_rect(Rect::new(120, 20, 136, 40), &[0.0]);
         Ok(())
     })
     .unwrap();
     let steps = s.active().unwrap().history.past_len();
-    s.execute(UPDATE, json!({})).unwrap();
-    assert_eq!(s.active().unwrap().history.past_len(), steps + 1);
+    s.execute(PAINT_APPLY, json!({})).unwrap();
+    let st = s.active().unwrap();
+    assert_eq!(st.history.past_len(), steps + 1);
+    assert!(crate::mask_view_cmds::view_json(st).is_null(), "overlay off");
     let after = shown(&s);
-    assert!(red_at(&both, w, 136, 30) > 0.0 && red_at(&after, w, 136, 30) < red_at(&both, w, 136, 30) * 0.3, "right light no longer glows");
-    assert!(red_at(&both, w, 40, 30) > 0.0 && (red_at(&after, w, 40, 30) - red_at(&both, w, 40, 30)).abs() < 0.005, "left light still glows");
-    assert!(red_at(&after, w, 84, 30) > 0.0 || red_at(&both, w, 84, 30) == 0.0);
-    // Back to output: the mask hides the glow again.
-    s.execute(GLOW, json!({"maskUse": "output"})).unwrap();
-    assert!(s.active().unwrap().doc.layer(id).unwrap().mask.as_ref().unwrap().enabled);
-    assert_eq!(active_settings(&s).unwrap()["maskUse"], "output");
+    assert!(red_at(&after, w, 140, 30) > 0.0, "right light glows");
+    assert!((red_at(&after, w, 140, 30) - red_at(&full, w, 140, 30)).abs() < 0.005, "as strongly as a full glow, past the stroke");
+    assert!(red_at(&full, w, 40, 30) > 0.0 && red_at(&after, w, 40, 30) < 1e-6, "left light not painted: no glow");
+    // Start again on the same layer: cleared again, settings kept.
+    s.execute(GLOW, json!({"maskUse": "paint", "glowRadius": 35})).unwrap();
+    s.execute(PAINT_START, json!({})).unwrap();
+    assert_eq!(s.active().unwrap().doc.layers.len(), 2);
+    assert_eq!(active_settings(&s).unwrap()["glowRadius"], 35.0);
+    assert!((red_at(&shown(&s), w, 140, 30) - red_at(&before, w, 140, 30)).abs() < 1e-6);
 }
 
 #[test]
-fn mask_brush_targets_the_glow_mask() {
+fn local_glow_needs_a_glow_layer_to_apply() {
     let mut s = night("rgb", 8, 40, 30);
-    assert!(s.execute(MASK_PAINT, json!({})).is_err());
-    assert!(s.execute(UPDATE, json!({})).is_err());
-    s.execute(GLOW, json!({})).unwrap();
-    assert_eq!(s.execute(MASK_ERASE, json!({})).unwrap()["tool"], "eraser");
-    assert_eq!(s.execute(MASK_PAINT, json!({})).unwrap()["tool"], "brush");
-    let st = s.active().unwrap();
-    assert_eq!(st.channel_view.target, crate::channel_cmds::ChannelTarget::LayerMask);
-    assert_eq!(s.tools.foreground, [1.0, 1.0, 1.0, 1.0]);
-    assert_eq!(s.tools.background, [0.0, 0.0, 0.0, 1.0]);
-    assert!(s.execute(MASK_PAINT, json!(5)).is_err());
-    assert!(s.execute(GLOW, json!({"maskUse": "both"})).is_err());
+    assert!(s.execute(PAINT_APPLY, json!({})).is_err());
+    assert!(s.execute(PAINT_START, json!(5)).is_err());
+    assert!(s.execute(GLOW, json!({"maskUse": "source"})).is_err());
+    assert!(night("cmyk", 8, 10, 10).execute(PAINT_START, json!({})).is_err());
+}
+
+/// While the red overlay shows, a brush stroke paints the glow mask, not the glow pixels.
+#[test]
+fn strokes_during_local_glow_paint_the_mask() {
+    let mut s = night("rgb", 8, 60, 40);
+    let id = LayerId(s.execute(PAINT_START, json!({})).unwrap()["layer"].as_u64().unwrap());
+    let pixels = s.active().unwrap().doc.layer(id).unwrap().surface().unwrap().read_region(Rect::new(0, 0, 60, 40));
+    s.execute("paint.stroke", json!({"points": [[20, 20], [40, 20]], "size": 9})).unwrap();
+    let l = s.active().unwrap().doc.layer(id).unwrap();
+    assert!(l.mask.as_ref().unwrap().surface.sample_channel(30, 20, 0) < 0.5, "painted into the mask");
+    assert_eq!(l.surface().unwrap().read_region(Rect::new(0, 0, 60, 40)), pixels, "glow pixels untouched");
 }

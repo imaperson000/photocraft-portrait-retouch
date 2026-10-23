@@ -4308,6 +4308,5 @@ cameraRaw	Yellow	Sárga
 	Clear Glow Mask	Ragyogásmaszk törlése
 	Skin Detail View	Bőrrészlet-nézet
 	Skin Detail View (Solarize)	Bőrrészlet-nézet (szolarizáció)
-	Glow Mask Brush	Ragyogásmaszk ecset
-	Glow Mask Eraser	Ragyogásmaszk radír
-	Update Glow	Ragyogás frissítése
+	Local Glow: Start Painting	Helyi ragyogás: festés indítása
+	Local Glow: Apply	Helyi ragyogás: alkalmazás
