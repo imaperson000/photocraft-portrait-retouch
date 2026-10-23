@@ -3004,3 +3004,23 @@ curves	Smooth	平滑
 
 # Print preview image (#8236)
 	Print preview image	Print preview image
+
+# Filter › Portrait Retouch (retouch layer kits)
+	Portrait Retouch	人像修圖
+	Frequency Separation…	頻率分離…
+	Dodge & Burn Layers…	加深減淡圖層…
+	Retouch Layer	修飾圖層
+	Helper	觀察組
+	Skin Smoothing…	磨皮…
+	Strength	強度
+	Mask	遮色片
+	Skin	膚色
+	Glow…	光暈…
+	Invert Glow Mask	反轉光暈遮色片
+	Clear Glow Mask	清除光暈遮色片
+	Glow Radius	半徑
+	Intensity	強度
+	Dispersion	光散射
+	Rays	條紋數
+	Bloom	漫反射
+	Streaks	條紋

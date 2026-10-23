@@ -299,6 +299,10 @@ pub const PREVIEWED: &[&str] = &[
     "image.mode.indexedColor",
     "image.mode.bitmap",
     "image.mode.duotone",
+    "portrait.frequencySeparation",
+    "portrait.dodgeBurn",
+    "portrait.skinSmooth",
+    "portrait.glow",
     "layer.matting.defringe",
     "layer.matting.colorDecontaminate",
     "layer.layerStyle.scaleEffects",
@@ -406,6 +410,12 @@ fn apply_command_defaults(app: &PhotocraftApp, command: &str, fields: &mut Map<S
     }
     if command == "layer.layerStyle.globalLight" {
         global_light_defaults(app, fields);
+    }
+    // Glow on a glow layer re-renders it: the dialog opens with that layer's own settings.
+    if command == photocraft_engine::glow_cmds::GLOW
+        && let Some(settings) = photocraft_engine::glow_cmds::active_settings(&app.session)
+    {
+        fields.extend(settings);
     }
     if command == "view.proofSetup" {
         proof_setup_defaults(app, fields);
