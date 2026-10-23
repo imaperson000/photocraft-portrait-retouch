@@ -176,29 +176,15 @@ Rust 在 Windows 上需要微軟的連結器（linker）。
 
 ### 步驟 4：下載這個 repo
 
-這是私人 repo，需要先登入 GitHub。最簡單的方式是用 GitHub CLI：
-
-```powershell
-winget install --id GitHub.cli
-```
-
-裝完開新的 PowerShell：
-
-```powershell
-gh auth login
-```
-
-照畫面選「GitHub.com → HTTPS → Login with a web browser」，在瀏覽器登入。登入後下載：
-
 ```powershell
 cd C:\
 mkdir build -Force
 cd C:\build
-gh repo clone imaperson000/photocraft-portrait-retouch
+git clone https://github.com/imaperson000/photocraft-portrait-retouch.git
 cd photocraft-portrait-retouch
 ```
 
-（不想裝 GitHub CLI 的話，也可以用 `git clone https://github.com/imaperson000/photocraft-portrait-retouch.git`，Git 會跳出視窗讓你登入。）
+下載大約 100 MB。
 
 ### 步驟 5：編譯
 
@@ -274,7 +260,11 @@ cargo build --release -p photocraft
 | `crates/ui-egui/src/lib.rs` | 「局部光暈：開始畫」後自動切換成筆刷工具 |
 | `crates/ui-egui/src/i18n/*.tsv` | 新選單項目在全部 21 種語言的翻譯（繁中、簡中另外翻了參數名稱） |
 | `docs/parity-checklist.md` | `cargo xtask parity` 自動重新產生 |
-| `README.md` | 最上方加一段說明，連到這份文件 |
+| `README.md` | 改寫成這個修改版的說明（原版 README 有大量 ArtCraft 商標與宣傳，修改版不能沿用），保留原版的工具清單段落（有測試會比對） |
+| `docs/brand/*.png`、`*.svg` | 刪除（ArtCraft 商標，修改版必須移除） |
+| `NOTICE`、`ATTRIBUTION.md` | 註明這是修改版、商標已移除；保留原本的著作權聲明 |
+| `crates/ui-egui/src/links.rs`、`canvas.rs`、`dialogs.rs`、`crates/engine/src/shell_commands.rs` | 移除 ArtCraft Discord／網站連結與按鈕，其餘連結改指向這個 repo |
+| `packaging/windows/photocraft.wxs`、`packaging/linux/*` | 安裝程式／套件的首頁與說明連結改為這個 repo |
 
 **Commit 紀錄**（分支 `main`，原版之後的 commit）
 
@@ -282,6 +272,7 @@ cargo build --release -p photocraft
 2. `Add skin detail view and light-source glow masks`
 3. `Local glow: paint the lights, then apply`
 4. `Add Chinese guide for the portrait retouch build`（這份文件）
+5. `Remove ArtCraft marks and community links for the public modified build`
 
 ---
 
@@ -347,5 +338,9 @@ cargo run --release -p photocraft-cli -- run in.jpg --cmd portrait.frequencySepa
 ## 8. 授權與注意事項
 
 - PhotoCraft 原始程式碼與這裡新增的程式碼：**MIT 或 Apache-2.0**（擇一），見 `LICENSE-MIT`、`LICENSE-APACHE`、`NOTICE`。
-- `docs/brand/` 裡的 ArtCraft 名稱、logo、標誌是 ArtCraft 團隊的商標，**不是開源的**（見 `docs/brand/LICENSE-brand.txt`）。這個 repo 目前是私人副本，所以保留。**如果要公開發布這個修改版，必須先移除 `docs/brand/` 的商標檔案、拿掉說明選單中以 ArtCraft 名義的連結，且不能把它說成 ArtCraft 的產品**；可以寫「以 ArtCraft 團隊的 PhotoCraft 為基礎」。
+- ArtCraft 的名稱、文字標誌與 logo 是 ArtCraft 團隊的商標，**不是開源的**（條款見 `docs/brand/LICENSE-brand.txt`）。依照條款對修改版的要求，這個版本已經：
+  - 刪除 `docs/brand/` 裡所有商標圖檔（只保留條款文字）；
+  - 拿掉程式裡以 ArtCraft 名義的社群連結（說明選單的「加入 ArtCraft Discord」「ArtCraft 網站」、起始畫面與「關於」視窗的 Discord 按鈕與 ArtCraft 連結）；說明選單剩下的「網站／GitHub／回報問題」改為指向這個 repo；
+  - 安裝程式與 Linux 套件資訊中的首頁、說明連結改為這個 repo；
+  - README 改寫，寫明這是以 ArtCraft 團隊的 PhotoCraft 為基礎的修改版，**不是 ArtCraft 官方產品**。
 - 新功能是依照公開的修圖技法與觀察到的行為**自己實作**的，沒有使用任何其他軟體或外掛的程式碼、素材或品牌名稱。
