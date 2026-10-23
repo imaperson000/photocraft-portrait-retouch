@@ -1,3 +1,7 @@
+> **人像修圖版**：這是以 PhotoCraft 0.14.0 為基礎修改的版本，加入「濾鏡 › 人像修圖」功能（頻率分離、加深減淡、磨皮、皮膚細節檢視、光暈與局部光暈）。
+> 功能說明、開發環境、改動清單與保母級安裝教學請看 **[PORTRAIT_RETOUCH.zh-TW.md](PORTRAIT_RETOUCH.zh-TW.md)**。
+> 以下是原版 PhotoCraft 的 README。
+
 <p align="center">
   <a href="https://getartcraft.com/">
     <picture>
