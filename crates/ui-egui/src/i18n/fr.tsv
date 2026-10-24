@@ -4436,3 +4436,15 @@ shape	Appearance	Apparence
 	Skin Detail View (Solarize)	Vue des détails de la peau (solarisation)
 	Local Glow: Start Painting	Halo local : commencer à peindre
 	Local Glow: Apply	Halo local : appliquer
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Copier les réglages Camera Raw
+	Paste Camera Raw Grade	Coller les réglages Camera Raw
+	Copy Grade	Copier les réglages
+	Paste Grade	Coller les réglages
+	Copy these settings to paste on another image	Copier ces réglages pour les coller sur une autre image
+	Use the copied Camera Raw grade here	Appliquer ici les réglages Camera Raw copiés
+	Copied the Camera Raw grade	Réglages Camera Raw copiés
+	No Camera Raw grade has been copied yet.	Aucun réglage Camera Raw n’a encore été copié.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Cette image n’a pas encore de réglages Camera Raw à copier : réglez-la d’abord dans Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Réglages Camera Raw collés : vérifiez l’aperçu puis cliquez sur OK

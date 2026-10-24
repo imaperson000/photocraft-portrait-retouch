@@ -3030,3 +3030,15 @@ curves	Smooth	平滑
 	Local Glow: Start Painting	局部光暈：開始畫
 	Local Glow: Apply	局部光暈：套用
 	Paint	筆刷區域
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	複製 Camera Raw 調色
+	Paste Camera Raw Grade	貼上 Camera Raw 調色
+	Copy Grade	複製調色
+	Paste Grade	貼上調色
+	Copy these settings to paste on another image	複製這組設定，貼到其他照片上
+	Use the copied Camera Raw grade here	把複製的 Camera Raw 調色套用到這裡
+	Copied the Camera Raw grade	已複製 Camera Raw 調色
+	No Camera Raw grade has been copied yet.	還沒有複製任何 Camera Raw 調色。
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	這張圖還沒有可以複製的 Camera Raw 調色：請先用 Camera Raw 調色。
+	Pasted the Camera Raw grade: check the preview, then click OK	已貼上 Camera Raw 調色：確認預覽後按「確定」

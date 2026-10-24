@@ -4103,3 +4103,15 @@ curves	Smooth	Згладити
 	Skin Detail View (Solarize)	Перегляд деталей шкіри (соляризація)
 	Local Glow: Start Painting	Локальне світіння: почати малювання
 	Local Glow: Apply	Локальне світіння: застосувати
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Копіювати налаштування Camera Raw
+	Paste Camera Raw Grade	Вставити налаштування Camera Raw
+	Copy Grade	Копіювати налаштування
+	Paste Grade	Вставити налаштування
+	Copy these settings to paste on another image	Скопіювати ці налаштування, щоб вставити в інше зображення
+	Use the copied Camera Raw grade here	Застосувати тут скопійовані налаштування Camera Raw
+	Copied the Camera Raw grade	Налаштування Camera Raw скопійовано
+	No Camera Raw grade has been copied yet.	Налаштування Camera Raw ще не скопійовано.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Це зображення ще не має налаштувань Camera Raw для копіювання: спочатку обробіть його в Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Налаштування Camera Raw вставлено: перевірте перегляд і натисніть OK

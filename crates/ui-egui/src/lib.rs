@@ -45,6 +45,7 @@ pub mod caf_ui;
 pub(crate) mod cam_preview;
 mod cam_transform;
 mod camera_raw_detail_ui;
+pub mod camera_raw_grade;
 mod camera_raw_preview_ui;
 mod camera_raw_scope_ui;
 pub mod camera_raw_ui;
@@ -891,6 +892,8 @@ pub struct PhotocraftApp {
     pub(crate) pending_raw_open: Option<camera_raw_ui::RawOpen>,
     /// The open-time re-develop (or its Camera Raw step) running in the background.
     pub(crate) raw_redevelop: Option<camera_raw_ui::Redevelop>,
+    /// The Camera Raw grade each open document was given, for Copy Camera Raw Grade.
+    pub(crate) camera_raw_grades: std::collections::HashMap<photocraft_doc::DocId, photocraft_algo::camera_raw::CameraRaw>,
     /// Filter › Adaptive Wide Angle dialog (wide_angle_ui).
     pub(crate) wide_angle: Option<wide_angle_ui::WideAngleDialog>,
     /// ⌘Z history of each open parameter dialog (edit_history).
@@ -1123,6 +1126,7 @@ impl PhotocraftApp {
             camera_raw: None,
             pending_raw_open: None,
             raw_redevelop: None,
+            camera_raw_grades: Default::default(),
             wide_angle: None,
             dialog_edits: Default::default(),
             pending_after_prompt: None,

@@ -4072,3 +4072,15 @@ curves	Smooth	スムーズ
 	Skin Detail View (Solarize)	肌のディテール表示（ソラリゼーション）
 	Local Glow: Start Painting	部分グロー：描画開始
 	Local Glow: Apply	部分グロー：適用
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera Raw の補正をコピー
+	Paste Camera Raw Grade	Camera Raw の補正をペースト
+	Copy Grade	補正をコピー
+	Paste Grade	補正をペースト
+	Copy these settings to paste on another image	この設定をコピーして別の画像にペースト
+	Use the copied Camera Raw grade here	コピーした Camera Raw の補正をここに適用
+	Copied the Camera Raw grade	Camera Raw の補正をコピーしました
+	No Camera Raw grade has been copied yet.	Camera Raw の補正はまだコピーされていません。
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	この画像にはコピーできる Camera Raw の補正がありません。先に Camera Raw で補正してください。
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera Raw の補正をペーストしました。プレビューを確認して OK をクリックしてください

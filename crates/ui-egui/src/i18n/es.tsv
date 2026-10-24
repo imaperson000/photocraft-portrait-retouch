@@ -4356,3 +4356,15 @@ navigator	Zoom	Zoom
 	Skin Detail View (Solarize)	Vista de detalle de piel (solarizar)
 	Local Glow: Start Painting	Resplandor local: empezar a pintar
 	Local Glow: Apply	Resplandor local: aplicar
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Copiar ajustes de Camera Raw
+	Paste Camera Raw Grade	Pegar ajustes de Camera Raw
+	Copy Grade	Copiar ajustes
+	Paste Grade	Pegar ajustes
+	Copy these settings to paste on another image	Copiar estos ajustes para pegarlos en otra imagen
+	Use the copied Camera Raw grade here	Usar aquí los ajustes de Camera Raw copiados
+	Copied the Camera Raw grade	Ajustes de Camera Raw copiados
+	No Camera Raw grade has been copied yet.	Todavía no se han copiado ajustes de Camera Raw.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Esta imagen aún no tiene ajustes de Camera Raw que copiar: ajústela primero en Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Ajustes de Camera Raw pegados: revise la vista previa y haga clic en OK

@@ -3405,3 +3405,15 @@ curves	Smooth	Glätten
 	Skin Detail View (Solarize)	Hautdetailansicht (Solarisation)
 	Local Glow: Start Painting	Lokales Leuchten: Malen beginnen
 	Local Glow: Apply	Lokales Leuchten: Anwenden
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera-Raw-Einstellungen kopieren
+	Paste Camera Raw Grade	Camera-Raw-Einstellungen einfügen
+	Copy Grade	Einstellungen kopieren
+	Paste Grade	Einstellungen einfügen
+	Copy these settings to paste on another image	Diese Einstellungen kopieren, um sie in ein anderes Bild einzufügen
+	Use the copied Camera Raw grade here	Die kopierten Camera-Raw-Einstellungen hier verwenden
+	Copied the Camera Raw grade	Camera-Raw-Einstellungen kopiert
+	No Camera Raw grade has been copied yet.	Es wurden noch keine Camera-Raw-Einstellungen kopiert.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Dieses Bild hat noch keine Camera-Raw-Einstellungen zum Kopieren: Bearbeiten Sie es zuerst in Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera-Raw-Einstellungen eingefügt: Vorschau prüfen, dann auf OK klicken

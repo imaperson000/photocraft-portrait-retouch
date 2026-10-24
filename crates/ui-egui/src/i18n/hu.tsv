@@ -4310,3 +4310,15 @@ cameraRaw	Yellow	Sárga
 	Skin Detail View (Solarize)	Bőrrészlet-nézet (szolarizáció)
 	Local Glow: Start Painting	Helyi ragyogás: festés indítása
 	Local Glow: Apply	Helyi ragyogás: alkalmazás
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera Raw beállítások másolása
+	Paste Camera Raw Grade	Camera Raw beállítások beillesztése
+	Copy Grade	Beállítások másolása
+	Paste Grade	Beállítások beillesztése
+	Copy these settings to paste on another image	Ezeket a beállításokat másolja egy másik képre való beillesztéshez
+	Use the copied Camera Raw grade here	A másolt Camera Raw beállítások használata itt
+	Copied the Camera Raw grade	A Camera Raw beállítások másolva
+	No Camera Raw grade has been copied yet.	Még nincsenek másolt Camera Raw beállítások.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Ennek a képnek még nincsenek másolható Camera Raw beállításai: előbb állítsa be a Camera Raw-ban.
+	Pasted the Camera Raw grade: check the preview, then click OK	A Camera Raw beállítások beillesztve: ellenőrizze az előnézetet, majd kattintson az OK gombra

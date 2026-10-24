@@ -4094,3 +4094,15 @@ curves	Smooth	Εξομάλυνση
 	Skin Detail View (Solarize)	Προβολή λεπτομερειών δέρματος (σολαριζάρισμα)
 	Local Glow: Start Painting	Τοπική λάμψη: έναρξη ζωγραφικής
 	Local Glow: Apply	Τοπική λάμψη: εφαρμογή
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Αντιγραφή ρυθμίσεων Camera Raw
+	Paste Camera Raw Grade	Επικόλληση ρυθμίσεων Camera Raw
+	Copy Grade	Αντιγραφή ρυθμίσεων
+	Paste Grade	Επικόλληση ρυθμίσεων
+	Copy these settings to paste on another image	Αντιγραφή αυτών των ρυθμίσεων για επικόλληση σε άλλη εικόνα
+	Use the copied Camera Raw grade here	Χρήση εδώ των αντιγραμμένων ρυθμίσεων Camera Raw
+	Copied the Camera Raw grade	Οι ρυθμίσεις Camera Raw αντιγράφηκαν
+	No Camera Raw grade has been copied yet.	Δεν έχουν αντιγραφεί ακόμη ρυθμίσεις Camera Raw.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Αυτή η εικόνα δεν έχει ακόμη ρυθμίσεις Camera Raw για αντιγραφή: ρυθμίστε την πρώτα στο Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Οι ρυθμίσεις Camera Raw επικολλήθηκαν: ελέγξτε την προεπισκόπηση και πατήστε OK

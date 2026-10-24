@@ -4139,3 +4139,15 @@ cameraRaw	Dehaze	Odstranění oparu
 	Skin Detail View (Solarize)	Zobrazení detailů pleti (solarizace)
 	Local Glow: Start Painting	Místní záře: začít malovat
 	Local Glow: Apply	Místní záře: použít
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Kopírovat nastavení Camera Raw
+	Paste Camera Raw Grade	Vložit nastavení Camera Raw
+	Copy Grade	Kopírovat nastavení
+	Paste Grade	Vložit nastavení
+	Copy these settings to paste on another image	Zkopírovat toto nastavení a vložit ho do jiného obrázku
+	Use the copied Camera Raw grade here	Použít zde zkopírované nastavení Camera Raw
+	Copied the Camera Raw grade	Nastavení Camera Raw zkopírováno
+	No Camera Raw grade has been copied yet.	Zatím nebylo zkopírováno žádné nastavení Camera Raw.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Tento obrázek zatím nemá nastavení Camera Raw ke zkopírování: nejprve ho upravte v Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Nastavení Camera Raw vloženo: zkontrolujte náhled a klikněte na OK

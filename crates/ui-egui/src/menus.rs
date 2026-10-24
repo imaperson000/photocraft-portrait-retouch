@@ -172,6 +172,9 @@ pub(crate) fn invoke_unguarded(app: &mut PhotocraftApp, ctx: &egui::Context, id:
     if let Some(r) = crate::distort_ui::menu(app, ctx, id, &params) {
         return r;
     }
+    if let Some(r) = crate::camera_raw_grade::menu(app, ctx, id, &params) {
+        return r;
+    }
     // Camera Raw Filter dialog (and its control params).
     if let Some(r) = crate::camera_raw_ui::menu(app, ctx, id, &params) {
         return r;
@@ -713,6 +716,9 @@ pub fn is_enabled(app: &PhotocraftApp, id: &str) -> bool {
     if let Some(e) = crate::view_cmds::is_enabled(app, id) {
         return e;
     }
+    if let Some(e) = crate::camera_raw_grade::is_enabled(app, id) {
+        return e;
+    }
     if let Some(e) = crate::plugin_ui::is_enabled(app, id) {
         return e;
     }
@@ -937,6 +943,8 @@ const PLACE_AFTER: &[(&str, &str)] = &[
     ("filter.render.relight", "filter.render.lightingEffects"),
     ("view.resetView", "view.flipHorizontal"),
     ("filter.other.colorToAlpha", "filter.other.offset"),
+    ("cameraRaw.copyGrade", "filter.cameraRaw"),
+    ("cameraRaw.pasteGrade", "cameraRaw.copyGrade"),
 ];
 
 pub fn menu_items(app: &PhotocraftApp) -> Vec<MenuItem> {

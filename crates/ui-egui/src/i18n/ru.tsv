@@ -4599,3 +4599,15 @@ shape	Appearance	Оформление
 	Skin Detail View (Solarize)	Просмотр деталей кожи (соляризация)
 	Local Glow: Start Painting	Локальное свечение: начать рисование
 	Local Glow: Apply	Локальное свечение: применить
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Копировать настройки Camera Raw
+	Paste Camera Raw Grade	Вставить настройки Camera Raw
+	Copy Grade	Копировать настройки
+	Paste Grade	Вставить настройки
+	Copy these settings to paste on another image	Скопировать эти настройки, чтобы вставить в другое изображение
+	Use the copied Camera Raw grade here	Применить здесь скопированные настройки Camera Raw
+	Copied the Camera Raw grade	Настройки Camera Raw скопированы
+	No Camera Raw grade has been copied yet.	Настройки Camera Raw ещё не скопированы.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	У этого изображения пока нет настроек Camera Raw для копирования: сначала обработайте его в Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Настройки Camera Raw вставлены: проверьте просмотр и нажмите OK

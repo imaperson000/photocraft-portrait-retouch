@@ -4124,3 +4124,15 @@ cameraData	Lens	Lens
 	Skin Detail View (Solarize)	Cilt Ayrıntı Görünümü (Solarize)
 	Local Glow: Start Painting	Yerel Parıltı: Boyamaya Başla
 	Local Glow: Apply	Yerel Parıltı: Uygula
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera Raw Ayarlarını Kopyala
+	Paste Camera Raw Grade	Camera Raw Ayarlarını Yapıştır
+	Copy Grade	Ayarları Kopyala
+	Paste Grade	Ayarları Yapıştır
+	Copy these settings to paste on another image	Bu ayarları başka bir görüntüye yapıştırmak için kopyala
+	Use the copied Camera Raw grade here	Kopyalanan Camera Raw ayarlarını burada kullan
+	Copied the Camera Raw grade	Camera Raw ayarları kopyalandı
+	No Camera Raw grade has been copied yet.	Henüz Camera Raw ayarı kopyalanmadı.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Bu görüntünün kopyalanacak Camera Raw ayarı yok: önce Camera Raw'da düzenleyin.
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera Raw ayarları yapıştırıldı: önizlemeyi kontrol edip Tamam'a tıklayın

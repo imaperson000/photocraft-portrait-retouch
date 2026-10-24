@@ -4466,3 +4466,15 @@ shape	Appearance	Izgled
 	Skin Detail View (Solarize)	Prikaz detalja kože (solarizacija)
 	Local Glow: Start Painting	Lokalni sjaj: počni crtanje
 	Local Glow: Apply	Lokalni sjaj: primeni
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Kopiraj Camera Raw podešavanja
+	Paste Camera Raw Grade	Nalepi Camera Raw podešavanja
+	Copy Grade	Kopiraj podešavanja
+	Paste Grade	Nalepi podešavanja
+	Copy these settings to paste on another image	Kopiraj ova podešavanja da ih nalepiš na drugu sliku
+	Use the copied Camera Raw grade here	Primeni ovde kopirana Camera Raw podešavanja
+	Copied the Camera Raw grade	Camera Raw podešavanja su kopirana
+	No Camera Raw grade has been copied yet.	Još nisu kopirana nikakva Camera Raw podešavanja.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Ova slika još nema Camera Raw podešavanja za kopiranje: prvo je podesi u Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera Raw podešavanja su nalepljena: proveri pregled, pa klikni OK

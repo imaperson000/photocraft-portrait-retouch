@@ -3065,3 +3065,15 @@ curves	Smooth	平滑
 	Mask Use	蒙版用途
 	Local Glow: Start Painting	局部光晕：开始绘制
 	Local Glow: Apply	局部光晕：应用
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	复制 Camera Raw 调色
+	Paste Camera Raw Grade	粘贴 Camera Raw 调色
+	Copy Grade	复制调色
+	Paste Grade	粘贴调色
+	Copy these settings to paste on another image	复制这组设置，粘贴到其他照片上
+	Use the copied Camera Raw grade here	把复制的 Camera Raw 调色应用到这里
+	Copied the Camera Raw grade	已复制 Camera Raw 调色
+	No Camera Raw grade has been copied yet.	还没有复制任何 Camera Raw 调色。
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	这张图还没有可以复制的 Camera Raw 调色：请先用 Camera Raw 调色。
+	Pasted the Camera Raw grade: check the preview, then click OK	已粘贴 Camera Raw 调色：确认预览后点击“确定”

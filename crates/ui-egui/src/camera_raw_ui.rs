@@ -541,6 +541,7 @@ fn finish_redevelop(app: &mut PhotocraftApp, params: &CameraRaw, raw: &RawOpen, 
     for id in app.view_docs.iter_mut().filter(|id| **id == raw.document) {
         *id = replacement;
     }
+    crate::camera_raw_grade::moved(app, raw.document, replacement);
     let warnings: Vec<String> =
         v.get("warnings").and_then(Value::as_array).map(|a| a.iter().filter_map(|w| w.as_str().map(str::to_string)).collect()).unwrap_or_default();
     crate::notices::io_warnings(app, &format!("Opened {}", raw.name), &without_develop_note(&warnings));
@@ -1013,6 +1014,24 @@ fn load_settings(app: &mut PhotocraftApp) -> Result<Value, String> {
     })
 }
 
+/// Put `next` into the open dialog as one undoable edit (Paste Camera Raw Grade). The preview
+/// resolution and the document's encoding stay the dialog's own.
+pub fn set_params(app: &mut PhotocraftApp, mut next: CameraRaw) -> Result<(), String> {
+    let d = app.camera_raw.as_mut().ok_or(tl!("Camera Raw isn't open"))?;
+    next.pixel_scale = d.params.pixel_scale;
+    next.encoding_gamma = d.params.encoding_gamma;
+    next.validate_changes(&d.original)?;
+    if d.params.point_curve != next.point_curve {
+        d.curve_state = Default::default();
+    }
+    if d.params != next {
+        remember_edit(d);
+        d.dirty = true;
+        d.params = next;
+    }
+    Ok(())
+}
+
 fn report_file_error(app: &mut PhotocraftApp, r: Result<Value, String>) {
     if let Err(e) = r
         && e != crate::file_dialog::CANCELLED
@@ -1066,6 +1085,14 @@ fn history_keys(d: &mut CameraRawDialog, ctx: &egui::Context) {
 }
 
 fn commit(app: &mut PhotocraftApp) -> Result<Value, String> {
+    let d = app.camera_raw.as_ref().ok_or(tl!("Camera Raw isn't open"))?;
+    // The grade this image ends up with, for Copy Camera Raw Grade.
+    // Recorded first: a raw re-develop replaces the document and moves the grade along with it
+    // (`finish_redevelop`).
+    let graded = d.raw_open.as_ref().map(|r| r.document).or_else(|| app.session.active().map(|st| st.doc.id)).map(|doc| (doc, d.params.clone()));
+    if let Some((doc, params)) = graded {
+        crate::camera_raw_grade::record(app, doc, &params);
+    }
     let d = app.camera_raw.as_ref().ok_or(tl!("Camera Raw isn't open"))?;
     let result = match d.target {
         Target::NewFilter => {
@@ -1474,6 +1501,13 @@ fn draw(app: &mut PhotocraftApp, ctx: &egui::Context, own_window: bool) {
         if fu.button(tl!("Load Settings…")).on_hover_text(tl!("Load settings from a Camera Raw .xmp file")).clicked() {
             action = Some("load");
         }
+        fu.add_space(12.0);
+        if fu.button(tl!("Paste Grade")).on_hover_text(tl!("Use the copied Camera Raw grade here")).clicked() {
+            action = Some(crate::camera_raw_grade::PASTE);
+        }
+        if fu.button(tl!("Copy Grade")).on_hover_text(tl!("Copy these settings to paste on another image")).clicked() {
+            action = Some(crate::camera_raw_grade::COPY);
+        }
         if !ctx.input(|i| i.pointer.primary_down())
             && let Some(origin) = d.edit_origin.take()
             && origin != d.params
@@ -1505,6 +1539,10 @@ fn draw(app: &mut PhotocraftApp, ctx: &egui::Context, own_window: bool) {
         }
         Some("load") => {
             let r = load_settings(app);
+            report_file_error(app, r);
+        }
+        Some(id @ (crate::camera_raw_grade::COPY | crate::camera_raw_grade::PASTE)) => {
+            let r = crate::camera_raw_grade::menu(app, ctx, id, &json!({})).unwrap_or(Ok(Value::Null));
             report_file_error(app, r);
         }
         _ => {}

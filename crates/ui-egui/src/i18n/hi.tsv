@@ -547,3 +547,15 @@ cameraRaw	Yellow	पीला
 	Skin Detail View (Solarize)	त्वचा विवरण दृश्य (सोलराइज़)
 	Local Glow: Start Painting	स्थानीय चमक: पेंट करना शुरू करें
 	Local Glow: Apply	स्थानीय चमक: लागू करें
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera Raw ग्रेड कॉपी करें
+	Paste Camera Raw Grade	Camera Raw ग्रेड पेस्ट करें
+	Copy Grade	ग्रेड कॉपी करें
+	Paste Grade	ग्रेड पेस्ट करें
+	Copy these settings to paste on another image	इन सेटिंग्स को किसी दूसरी इमेज पर पेस्ट करने के लिए कॉपी करें
+	Use the copied Camera Raw grade here	कॉपी किया गया Camera Raw ग्रेड यहाँ लगाएँ
+	Copied the Camera Raw grade	Camera Raw ग्रेड कॉपी किया गया
+	No Camera Raw grade has been copied yet.	अभी तक कोई Camera Raw ग्रेड कॉपी नहीं किया गया है।
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	इस इमेज में कॉपी करने के लिए अभी कोई Camera Raw ग्रेड नहीं है: पहले Camera Raw में ग्रेड करें।
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera Raw ग्रेड पेस्ट किया गया: प्रीव्यू देखें, फिर OK पर क्लिक करें

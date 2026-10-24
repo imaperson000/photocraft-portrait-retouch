@@ -3886,3 +3886,15 @@ curves	Smooth	Làm mượt
 	Skin Detail View (Solarize)	Xem chi tiết da (solarize)
 	Local Glow: Start Painting	Phát sáng cục bộ: bắt đầu vẽ
 	Local Glow: Apply	Phát sáng cục bộ: áp dụng
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Sao chép chỉnh màu Camera Raw
+	Paste Camera Raw Grade	Dán chỉnh màu Camera Raw
+	Copy Grade	Sao chép chỉnh màu
+	Paste Grade	Dán chỉnh màu
+	Copy these settings to paste on another image	Sao chép các thiết lập này để dán vào ảnh khác
+	Use the copied Camera Raw grade here	Dùng chỉnh màu Camera Raw đã sao chép ở đây
+	Copied the Camera Raw grade	Đã sao chép chỉnh màu Camera Raw
+	No Camera Raw grade has been copied yet.	Chưa sao chép chỉnh màu Camera Raw nào.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Ảnh này chưa có chỉnh màu Camera Raw để sao chép: hãy chỉnh trong Camera Raw trước.
+	Pasted the Camera Raw grade: check the preview, then click OK	Đã dán chỉnh màu Camera Raw: kiểm tra bản xem trước rồi bấm OK

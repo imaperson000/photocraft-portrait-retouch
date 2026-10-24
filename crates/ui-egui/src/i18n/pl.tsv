@@ -4010,3 +4010,15 @@ curves	Smooth	Wygładź
 	Skin Detail View (Solarize)	Podgląd szczegółów skóry (solaryzacja)
 	Local Glow: Start Painting	Lokalna poświata: zacznij malować
 	Local Glow: Apply	Lokalna poświata: zastosuj
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Kopiuj ustawienia Camera Raw
+	Paste Camera Raw Grade	Wklej ustawienia Camera Raw
+	Copy Grade	Kopiuj ustawienia
+	Paste Grade	Wklej ustawienia
+	Copy these settings to paste on another image	Skopiuj te ustawienia, aby wkleić je do innego obrazu
+	Use the copied Camera Raw grade here	Użyj tutaj skopiowanych ustawień Camera Raw
+	Copied the Camera Raw grade	Skopiowano ustawienia Camera Raw
+	No Camera Raw grade has been copied yet.	Nie skopiowano jeszcze żadnych ustawień Camera Raw.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Ten obraz nie ma jeszcze ustawień Camera Raw do skopiowania: najpierw dopasuj go w Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Wklejono ustawienia Camera Raw: sprawdź podgląd, a następnie kliknij OK

@@ -4511,3 +4511,15 @@ shape	Appearance	Aspetto
 	Skin Detail View (Solarize)	Vista dettagli pelle (solarizzazione)
 	Local Glow: Start Painting	Bagliore locale: inizia a dipingere
 	Local Glow: Apply	Bagliore locale: applica
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Copia regolazioni Camera Raw
+	Paste Camera Raw Grade	Incolla regolazioni Camera Raw
+	Copy Grade	Copia regolazioni
+	Paste Grade	Incolla regolazioni
+	Copy these settings to paste on another image	Copia queste impostazioni per incollarle su un’altra immagine
+	Use the copied Camera Raw grade here	Usa qui le regolazioni Camera Raw copiate
+	Copied the Camera Raw grade	Regolazioni Camera Raw copiate
+	No Camera Raw grade has been copied yet.	Non è stata ancora copiata nessuna regolazione Camera Raw.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Questa immagine non ha ancora regolazioni Camera Raw da copiare: regolala prima in Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Regolazioni Camera Raw incollate: controlla l’anteprima, poi fai clic su OK

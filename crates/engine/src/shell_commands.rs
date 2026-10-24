@@ -19,6 +19,9 @@ pub const SHELL_COMMANDS: &[(&str, &str, &[&str], Option<&str>)] = &[
     ("window.panel.activate", "Activate Panel", &[], None),
     ("window.panel.close", "Close Panel", &[], None),
     ("file.open", "Open…", &["File"], Some("Cmd+O")),
+    // Copy / Paste Camera Raw Grade (camera_raw_grade): the Camera Raw settings an image was graded with.
+    ("cameraRaw.copyGrade", "Copy Camera Raw Grade", &["Filter"], None),
+    ("cameraRaw.pasteGrade", "Paste Camera Raw Grade", &["Filter"], None),
     ("file.save", "Save", &["File"], Some("Cmd+S")),
     ("file.saveAs", "Save As…", &["File"], Some("Cmd+Shift+S")),
     ("file.exit", "Exit", &["File"], Some("Cmd+Q")),

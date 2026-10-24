@@ -4333,3 +4333,15 @@ layerLabel	No Color	Sem cor
 	Skin Detail View (Solarize)	Visualização de detalhes da pele (solarizar)
 	Local Glow: Start Painting	Brilho local: começar a pintar
 	Local Glow: Apply	Brilho local: aplicar
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Copiar ajustes do Camera Raw
+	Paste Camera Raw Grade	Colar ajustes do Camera Raw
+	Copy Grade	Copiar ajustes
+	Paste Grade	Colar ajustes
+	Copy these settings to paste on another image	Copiar estes ajustes para colar em outra imagem
+	Use the copied Camera Raw grade here	Usar aqui os ajustes do Camera Raw copiados
+	Copied the Camera Raw grade	Ajustes do Camera Raw copiados
+	No Camera Raw grade has been copied yet.	Nenhum ajuste do Camera Raw foi copiado ainda.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Esta imagem ainda não tem ajustes do Camera Raw para copiar: ajuste-a primeiro no Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Ajustes do Camera Raw colados: confira a visualização e clique em OK

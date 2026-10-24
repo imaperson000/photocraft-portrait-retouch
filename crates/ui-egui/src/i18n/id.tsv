@@ -3408,3 +3408,15 @@ curves	Smooth	Haluskan
 	Skin Detail View (Solarize)	Tampilan Detail Kulit (Solarisasi)
 	Local Glow: Start Painting	Cahaya Lokal: Mulai Melukis
 	Local Glow: Apply	Cahaya Lokal: Terapkan
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Salin Penyesuaian Camera Raw
+	Paste Camera Raw Grade	Tempel Penyesuaian Camera Raw
+	Copy Grade	Salin Penyesuaian
+	Paste Grade	Tempel Penyesuaian
+	Copy these settings to paste on another image	Salin pengaturan ini untuk ditempel ke gambar lain
+	Use the copied Camera Raw grade here	Gunakan penyesuaian Camera Raw yang disalin di sini
+	Copied the Camera Raw grade	Penyesuaian Camera Raw disalin
+	No Camera Raw grade has been copied yet.	Belum ada penyesuaian Camera Raw yang disalin.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Gambar ini belum punya penyesuaian Camera Raw untuk disalin: sesuaikan dulu di Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Penyesuaian Camera Raw ditempel: periksa pratinjau, lalu klik OK

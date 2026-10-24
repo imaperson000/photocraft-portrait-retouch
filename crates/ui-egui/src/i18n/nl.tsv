@@ -4154,3 +4154,15 @@ curves	Smooth	Vloeiend maken
 	Skin Detail View (Solarize)	Huiddetailweergave (solariseren)
 	Local Glow: Start Painting	Lokale gloed: beginnen met schilderen
 	Local Glow: Apply	Lokale gloed: toepassen
+
+# Copy / Paste Camera Raw Grade
+	Copy Camera Raw Grade	Camera Raw-instellingen kopiëren
+	Paste Camera Raw Grade	Camera Raw-instellingen plakken
+	Copy Grade	Instellingen kopiëren
+	Paste Grade	Instellingen plakken
+	Copy these settings to paste on another image	Deze instellingen kopiëren om in een andere afbeelding te plakken
+	Use the copied Camera Raw grade here	De gekopieerde Camera Raw-instellingen hier gebruiken
+	Copied the Camera Raw grade	Camera Raw-instellingen gekopieerd
+	No Camera Raw grade has been copied yet.	Er zijn nog geen Camera Raw-instellingen gekopieerd.
+	This image has no Camera Raw grade to copy yet: grade it in Camera Raw first.	Deze afbeelding heeft nog geen Camera Raw-instellingen om te kopiëren: bewerk haar eerst in Camera Raw.
+	Pasted the Camera Raw grade: check the preview, then click OK	Camera Raw-instellingen geplakt: controleer de voorvertoning en klik op OK
