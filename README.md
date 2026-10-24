@@ -35,7 +35,14 @@ Move · Artboard · Rectangular and Elliptical Marquee · Single Row Marquee · 
 
 PhotoCraft 本身的架構、開發與貢獻規範見 [AGENTS.md](AGENTS.md) 與 [`docs/`](docs/)。
 
-## 快速開始（已經裝好 Rust 與 C++ 編譯工具的話）
+## 下載（Windows，免安裝）
+
+到 [Releases](https://github.com/imaperson000/photocraft-portrait-retouch/releases/latest) 下載
+`photocraft-portrait-retouch-…-windows-x64.zip`，解壓縮後點兩下 `photocraft.exe` 即可，不用安裝任何開發工具。
+Windows 跳出「Windows 已保護您的電腦」時，按「其他資訊」→「仍要執行」。
+已經裝了原版 PhotoCraft 也可以，兩者的設定互不影響。
+
+## 從原始碼編譯（已經裝好 Rust 與 C++ 編譯工具的話）
 
 ```powershell
 git clone https://github.com/imaperson000/photocraft-portrait-retouch.git

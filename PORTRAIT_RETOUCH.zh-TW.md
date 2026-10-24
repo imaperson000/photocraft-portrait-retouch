@@ -105,6 +105,21 @@
 
 ## 4. 保母級安裝教學（Windows）
 
+### 只想用、不想編譯：直接下載（最簡單）
+
+1. 打開 <https://github.com/imaperson000/photocraft-portrait-retouch/releases/latest>。
+2. 在「Assets」下面點 **`photocraft-portrait-retouch-…-windows-x64.zip`** 下載（約 33 MB）。
+3. 在下載的 zip 上按右鍵 →「**解壓縮全部**」，選一個位置（例如桌面）。
+4. 打開解壓縮出來的資料夾，點兩下 **`photocraft.exe`**。
+5. 出現「Windows 已保護您的電腦」時，按「**其他資訊**」→「**仍要執行**」（程式沒有付費數位簽章，第一次才會出現）。
+6. 想要桌面捷徑：在 `photocraft.exe` 上按右鍵 →「傳送到」→「桌面（建立捷徑）」。
+
+資料夾裡的 `portable.txt` 讓這個版本把設定存在旁邊的 `PhotoCraftData` 資料夾。**已經裝過原版 PhotoCraft 也不會互相影響**，兩個可以同時開。請不要刪掉 `portable.txt`。
+
+不需要下面的步驟 1–7，那些是給想自己從原始碼編譯的人。
+
+### 從原始碼編譯
+
 > 以下每一步都可以直接照做。指令請在 **PowerShell** 裡輸入（開始選單搜尋「PowerShell」）。
 > 第一次完整編譯大約需要 **20–60 分鐘**（看電腦速度），之後改程式只會重編改到的部分，快很多。
 
