@@ -501,6 +501,7 @@ pub fn open(app: &mut PhotocraftApp, command: &str) -> Option<u64> {
     }
     restore_remembered(app, command, spec.params, &mut fields);
     apply_command_defaults(app, command, &mut fields);
+    hide_glow_overlay(app, command, &mut fields);
     if crate::blur_pins::handles(command) {
         crate::blur_pins::init(app, &mut fields);
     }
@@ -514,6 +515,29 @@ pub fn open(app: &mut PhotocraftApp, command: &str) -> Option<u64> {
     }
     let id = app.ui.open_dialog(crate::state::DialogKind::Command, fields);
     Some(id)
+}
+
+/// Marks a Glow dialog opened over a shown local-glow paint mask (the layer id to show it on again).
+const GLOW_OVERLAY: &str = "__glowOverlay";
+
+/// The red paint overlay would cover the glow preview: Glow hides it while its dialog is open.
+fn hide_glow_overlay(app: &mut PhotocraftApp, command: &str, fields: &mut Map<String, Value>) {
+    if command != photocraft_engine::glow_cmds::GLOW {
+        return;
+    }
+    let Some(view) = app.session.active().and_then(photocraft_engine::mask_view_cmds::current) else { return };
+    if view.mode != photocraft_engine::mask_view_cmds::MaskViewMode::Overlay {
+        return;
+    }
+    if app.session.execute(photocraft_engine::mask_view_cmds::ID, json!({"layer": view.layer.0, "mode": "off"})).is_ok() {
+        fields.insert(GLOW_OVERLAY.into(), json!(view.layer.0));
+    }
+}
+
+/// Cancel on a Glow dialog that hid the paint overlay shows it again, so painting can go on.
+pub(crate) fn restore_glow_overlay(app: &mut PhotocraftApp, fields: &Map<String, Value>) {
+    let Some(layer) = fields.get(GLOW_OVERLAY).and_then(Value::as_u64) else { return };
+    let _ = app.session.execute(photocraft_engine::mask_view_cmds::ID, json!({"layer": layer, "mode": "overlay"}));
 }
 
 /// Arbitrary rotation starts at the angle that straightens the ruler line, when there is one.
@@ -1474,6 +1498,27 @@ mod tests {
         {
             assert!(!uses_angle_dial(cmd, "angle"), "{cmd}");
         }
+    }
+
+    #[test]
+    fn glow_hides_the_local_glow_paint_overlay_and_cancel_shows_it_again() {
+        use photocraft_engine::{glow_cmds, mask_view_cmds};
+        let mut app = PhotocraftApp::new(photocraft_engine::Session::new(), Default::default());
+        app.session.execute("file.new", json!({"width": 40, "height": 30})).unwrap();
+        app.session.execute(glow_cmds::PAINT_START, json!({})).unwrap();
+        let view = |app: &PhotocraftApp| app.session.active().and_then(mask_view_cmds::current).map(|v| v.mode);
+        assert_eq!(view(&app), Some(mask_view_cmds::MaskViewMode::Overlay));
+
+        // The red overlay would cover the preview: Glow hides it while its dialog is open.
+        let id = open(&mut app, glow_cmds::GLOW).unwrap();
+        assert_eq!(view(&app), None);
+        crate::dialogs::cancel(&mut app, id).unwrap();
+        assert_eq!(view(&app), Some(mask_view_cmds::MaskViewMode::Overlay), "Cancel goes back to painting");
+
+        // Other filters leave the overlay alone.
+        let id = open(&mut app, "filter.blur.gaussianBlur").unwrap();
+        assert_eq!(view(&app), Some(mask_view_cmds::MaskViewMode::Overlay));
+        crate::dialogs::cancel(&mut app, id).unwrap();
     }
 
     #[test]
